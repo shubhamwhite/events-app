@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Package, Sparkles, Calendar, Users, Award, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router";
+
 const Services = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -105,7 +106,6 @@ const Services = () => {
     fetchServices();
   }, []);
 
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -130,9 +130,7 @@ const Services = () => {
   const displayedServices = showAll ? services : services.slice(0, 3);
 
   return (
-    <section className="relative min-h-screen  py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      
-
+    <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -148,7 +146,6 @@ const Services = () => {
             repeatType: "reverse",
           }}
         />
-       
       </div>
 
       <motion.div
@@ -179,7 +176,7 @@ const Services = () => {
           >
             <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
           </motion.div>
-        ) : ( 
+        ) : (
           <AnimatePresence>
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -188,7 +185,7 @@ const Services = () => {
               {displayedServices.map((service, index) => (
                 <motion.div
                   key={index}
-                  className="group bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300"
+                  className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
                   variants={itemVariants}
                   whileHover={{ y: -8, transition: { duration: 0.3 } }}
                   initial={{ opacity: 0, y: 20 }}
@@ -196,20 +193,23 @@ const Services = () => {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <div className="p-8">
-                    <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center overflow-hidden group-hover:bg-emerald-500/20 transition-all duration-300">
-                     <img src= {service.image} className="w-full h-full object-cover filter invert p-2"/>
+                  <div className="p-8 relative overflow-hidden">
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center overflow-hidden group-hover:bg-emerald-500/20 transition-all duration-300">
+                        <img src={service.image} className="w-full h-full object-cover filter invert p-2"/>
+                      </div>
+
+                      <h3 className="text-xl font-bold mt-6 mb-4">
+                        <span className="bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
+                          {service.title}
+                        </span>
+                      </h3>
+
+                      <p className="text-gray-400 mb-6">{service.description}</p>
                     </div>
-
-                    <h3 className="text-xl font-bold mt-6 mb-4">
-                      <span className="bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
-                        {service.title}
-                      </span>
-                    </h3>
-
-                    <p className="text-gray-400 mb-6">{service.description}</p>
-
-                  
                   </div>
                 </motion.div>
               ))}
@@ -218,20 +218,16 @@ const Services = () => {
         )}
 
         <div className="flex flex-col gap-8 items-center mt-16">
-       
-            <NavLink to="/service">
-              <motion.button
-                className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hover:cursor-pointer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>View All Service</span>
-                <Sparkles className="w-5 h-5" />
-              </motion.button>
-            </NavLink>
-   
-
-         
+          <NavLink to="/service">
+            <motion.button
+              className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hover:cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span>View All Service</span>
+              <Sparkles className="w-5 h-5" />
+            </motion.button>
+          </NavLink>
         </div>
       </motion.div>
     </section>
@@ -239,5 +235,3 @@ const Services = () => {
 };
 
 export default Services;
-
-

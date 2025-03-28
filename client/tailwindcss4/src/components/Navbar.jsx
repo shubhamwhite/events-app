@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from "react-router";
 import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
@@ -10,9 +10,8 @@ const Navbar = () => {
     { name: "Events", path: "/event" },
     { name: "Services", path: "/service" },
     { name: "Gallery", path: "/gallery" },
-    { name: "Send Testimonials", path: "/testimonials" },
+    { name: "Send Testimonials", path: "/testimonial" },
     { name: "Contact Us", path: "/contact" },
-    { name: "FAQ", path: "/faq" },
   ];
 
   const navVariants = {
@@ -26,7 +25,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="sticky top-0 left-0 right-0 z-40 bg-[#1B262C]/80 backdrop-blur-lg border-b border-emerald-500/20">
+      <nav className="sticky top-0 left-0 right-0 z-20 bg-[#1B262C]/80 backdrop-blur-lg border-b border-emerald-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -63,6 +62,18 @@ const Navbar = () => {
                     </NavLink>
                   </motion.div>
                 ))}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <NavLink
+                    to="/store"
+                    className="px-4 py-2 rounded-md text-sm font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <BookOpen size={16} />
+                    Book Store
+                  </NavLink>
+                </motion.div>
               </div>
             </div>
 
@@ -109,6 +120,19 @@ const Navbar = () => {
                     </NavLink>
                   </motion.div>
                 ))}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <NavLink
+                    to="/store"
+                    className="block px-4 py-2 rounded-md text-base font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-colors duration-200 flex items-center gap-2"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <BookOpen size={16} />
+                    Book Store
+                  </NavLink>
+                </motion.div>
               </div>
             </motion.div>
           )}

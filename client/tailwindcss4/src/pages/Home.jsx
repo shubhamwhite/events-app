@@ -1,5 +1,5 @@
 import React from 'react'
-import Contact from '../components/Contact';
+import Intro from '../components/Intro';
 import EventGallery from '../components/EventGallery';
 import FAQ from '../components/Faq';
 import FeaturedEvents from '../components/FeaturedEvents';
@@ -28,7 +28,7 @@ const Home = () => {
             <Services />
             <EventGallery />
             <Testimonials />
-            <Contact />
+            <Intro/>
             <FAQ />
             <Footer />
           </div>

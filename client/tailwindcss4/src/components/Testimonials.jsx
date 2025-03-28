@@ -111,7 +111,6 @@ const Testimonials = () => {
   return (
     <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       
-
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -193,11 +192,11 @@ const Testimonials = () => {
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-emerald-400">{testimonial.reviewer}</h3>
-                      <p className="text-sm text-gray-400">{testimonial.position}</p>
+                      
                     </div>
                   </div>
                   
-                  <h4 className="text-xl font-semibold text-emerald-400 mb-3">{testimonial.title}</h4>
+                 
                   <p className="text-gray-400 mb-6">{testimonial.description}</p>
                   
                   <div className="flex items-center gap-1">

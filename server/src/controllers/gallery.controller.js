@@ -1,5 +1,6 @@
 const EventGallery = require("../models/gallery.model");
 const  base  = require('../constant/general');
+
 // 🟢 CREATE Event
 exports.createEvent = async (req, res) => {
   try {
@@ -28,6 +29,7 @@ exports.createEvent = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 // 🔵 GET All Events
 exports.getAllEvents = async (req, res) => {
   try {
@@ -38,7 +40,6 @@ exports.getAllEvents = async (req, res) => {
   }
 };
 
-// 🟡 UPDATE Event
 // 🟡 UPDATE Event
 exports.updateEvent = async (req, res) => {
   try {

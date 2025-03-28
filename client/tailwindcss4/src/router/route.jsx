@@ -4,6 +4,9 @@ import App from '../App'
 import EventGallery from '../pages/EventGallery'
 import FeatureEvent from '../pages/FeatureEvent'
 import Service from '../pages/Service'
+import Testimonial from '../pages/Testimonials'
+import Contact from '../pages/Contact'
+import Store from '../pages/BookStore'
 
 export const router = createBrowserRouter([
     {
@@ -21,5 +24,18 @@ export const router = createBrowserRouter([
     {
         path: '/service',
         Component: Service,
+    },
+    {
+        path: '/testimonial',
+        Component: Testimonial,
+    },
+    {
+        path: '/contact',
+        Component: Contact,
+    }
+    ,
+    {
+        path: '/store',
+        Component: Store,
     }
 ])
