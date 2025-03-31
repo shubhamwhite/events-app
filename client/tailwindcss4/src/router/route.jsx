@@ -8,6 +8,7 @@ import Testimonial from '../pages/Testimonials'
 import Contact from '../pages/Contact'
 import Store from '../pages/BookStore'
 import EventBlog from '../pages/EventBlog'
+import NotFound from '../pages/NotFound'
 
 export const router = createBrowserRouter([
     {
@@ -43,5 +44,10 @@ export const router = createBrowserRouter([
     {
         path: '/blog',
         Component: EventBlog,
+    },
+    // Add this as the last route
+    {
+        path: '*',
+        Component: NotFound,
     }
 ])
