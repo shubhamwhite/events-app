@@ -1,294 +1,270 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Search, X, Sparkles, Calendar, Users, Gift, ChevronRight, Home } from 'lucide-react';
+import { Camera, Users, Building2, Heart, Sparkles, Home, ChevronRight, Video, Image } from 'lucide-react';
+
+const events = [
+  {
+    id: 1,
+    type: 'wedding',
+    title: 'Sarah & John\'s Wedding',
+    description: 'An elegant beachside wedding celebration filled with love and joy.',
+    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    date: 'June 15, 2023'
+  },
+  {
+    id: 2,
+    type: 'corporate',
+    title: 'Tech Summit 2023',
+    description: 'Annual corporate gathering showcasing innovation and networking.',
+    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    date: 'July 22, 2023'
+  },
+  {
+    id: 3,
+    type: 'wedding',
+    title: 'Emily & Michael\'s Reception',
+    description: 'A romantic garden wedding with vintage touches and elegant details.',
+    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    date: 'August 10, 2023'
+  },
+  {
+    id: 4,
+    type: 'corporate',
+    title: 'Annual Awards Gala',
+    description: 'Celebrating excellence in business with an evening of recognition.',
+    image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80',
+    date: 'September 5, 2023'
+  },
+  {
+    id: 5,
+    type: 'wedding',
+    title: 'Jessica & David\'s Celebration',
+    description: 'A magical winter wonderland wedding with stunning decorations.',
+    image: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    date: 'October 1, 2023'
+  },
+  {
+    id: 6,
+    type: 'corporate',
+    title: 'Product Launch Event',
+    description: 'Unveiling our latest innovations to industry leaders.',
+    image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
+    date: 'November 15, 2023'
+  }
+];
 
 const EventGallery = () => {
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showAll, setShowAll] = useState(false);
-  const [eventCategories, setEventCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const [expanded, setExpanded] = useState(false);
 
-  const fallbackData = [
-    {
-      category: "Elegant Weddings",
-      icon: <Users className="w-6 h-6" />,
-      description: "Crafting unforgettable moments for your special day",
-      images: [
-        "https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-        "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80",
-        "https://images.unsplash.com/photo-1606800052052-a08af7148866?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-      ],
-      videos: ["https://player.vimeo.com/external/368763065.sd.mp4?s=13d7e3e1464f21b724d89c4c175d7c712924d2d9&profile_id=139&oauth2_token_id=57447761"],
-    },
-    {
-      category: "Corporate Events",
-      icon: <Calendar className="w-6 h-6" />,
-      description: "Professional events that leave lasting impressions",
-      images: [
-        "https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80",
-        "https://images.unsplash.com/photo-1560439514-4e9645039924?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-        "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80",
-        "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1112&q=80"
-      ],
-      videos: [],
-    },
-    {
-      category: "Birthday Celebrations",
-      icon: <Gift className="w-6 h-6" />,
-      description: "Making every birthday a magical celebration",
-      images: [
-        "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-        "https://images.unsplash.com/photo-1464349153735-7db50ed83c84?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80",
-        "https://images.unsplash.com/photo-1602631985686-1bb0e6a8696e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-        "https://images.unsplash.com/photo-1513151233558-d860c5398176?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-      ],
-      videos: ["https://player.vimeo.com/external/370467553.sd.mp4?s=32ef1f185aadf594be7e5ad7c8d364985aa13cd2&profile_id=139&oauth2_token_id=57447761"],
-    },
-  ];
-
-  useEffect(() => {
-    fetch("http://localhost:5000/api/v1/dashboard/gallery/get")
-      .then((response) => response.json())
-      .then((data) => {
-        const formattedData = data.map((event) => ({
-          category: event.title,
-          icon: getEventIcon(event.title),
-          description: event.description || getDefaultDescription(event.title),
-          images: [event.image1, event.image2, event.image3, event.image4].filter(Boolean),
-          videos: event.video ? [event.video] : [],
-        }));
-        setEventCategories(formattedData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching event gallery:", error);
-        setEventCategories(fallbackData);
-        setLoading(false);
-      });
-  }, []);
-
-  const getEventIcon = (category) => {
-    const categoryLower = category.toLowerCase();
-    if (categoryLower.includes('wedding')) return <Users className="w-6 h-6" />;
-    if (categoryLower.includes('corporate')) return <Calendar className="w-6 h-6" />;
-    if (categoryLower.includes('birthday')) return <Gift className="w-6 h-6" />;
-    return <Calendar className="w-6 h-6" />;
-  };
-
-  const getDefaultDescription = (category) => {
-    const categoryLower = category.toLowerCase();
-    if (categoryLower.includes('wedding')) return "Creating unforgettable wedding experiences";
-    if (categoryLower.includes('corporate')) return "Professional events that leave lasting impressions";
-    if (categoryLower.includes('birthday')) return "Making every birthday a magical celebration";
-    return "Crafting memorable moments for your special occasion";
-  };
-
-  const filteredEvents = eventCategories.filter((event) =>
-    event.category.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredEvents = events.filter(event => 
+    filter === 'all' ? true : event.type === filter
   );
 
-  const displayedEvents = showAll ? filteredEvents : filteredEvents.slice(0, 3);
+  const displayedEvents = expanded ? filteredEvents : filteredEvents.slice(0, 3);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 }
+    }
+  };
 
   return (
-    <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
-      
-      <motion.div
-        className="absolute top-0 left-0 w-full h-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent" />
-      </motion.div>
+    <section className="relative min-h-[50%] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute bottom-50 left-20 w-60 sm:w-72 h-60 sm:h-72 rounded-full bg-teal-500/20 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 40, 0],
+            y: [0, 30, 0]
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+      </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <nav className="mb-8">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="relative z-10 max-w-7xl mx-auto"
+      >
+        <nav className="mb-6 sm:mb-8">
           <motion.ol 
-            className="flex items-center space-x-2 text-sm"
+            className="flex items-center space-x-2 text-xs sm:text-sm"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             <li className="flex items-center">
               <a href="/" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-                <Home size={16} />
+                <Home size={14} className="sm:w-4 sm:h-4" />
                 <span>Home</span>
               </a>
             </li>
             <li className="flex items-center text-emerald-400">
-              <ChevronRight size={16} />
+              <ChevronRight size={14} className="sm:w-4 sm:h-4" />
             </li>
-            <li className="text-emerald-200">Gallery</li>
+            <li className="text-emerald-200">Featured Events</li>
           </motion.ol>
         </nav>
 
-        <motion.div 
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <motion.span 
-            className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 inline-block mb-4"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Discover Our Work
-          </motion.span>
-          <h1 className="text-5xl sm:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-emerald-200 to-emerald-400">
-            Event Gallery
-          </h1>
-          <p className="text-emerald-200/80 text-lg max-w-2xl mx-auto">
-            Explore our collection of meticulously crafted events, where every detail tells a story of celebration and success.
+        {/* Header Section */}
+        <motion.div variants={itemVariants} className="text-center mb-8 sm:mb-12">
+          <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-xs sm:text-sm font-medium border border-emerald-500/20 inline-block mb-4">
+            Upcoming Events
+          </span>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-transparent bg-clip-text">
+              Event Gallery
+            </span>
+          </h2>
+          <p className="text-gray-400 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto">
+            Discover our upcoming signature events and join us for unforgettable experiences crafted with passion and attention to detail.
           </p>
         </motion.div>
 
-        <div className="max-w-md mx-auto mb-12">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2" size={20} />
-            <input
-              type="text"
-              placeholder="Search events..."
-              className="w-full p-4 pl-12 pr-4 bg-black/40 backdrop-blur-sm border border-emerald-500/100 rounded-full text-emerald-400 placeholder-emerald-400/50 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </div>
+        {/* Filter Buttons */}
+        <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8 sm:mb-12">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-3 sm:px-6 py-2 rounded-full transition-all text-xs sm:text-sm ${
+              filter === 'all'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
+                : 'bg-gray-800/80 text-gray-400 hover:bg-gray-700'
+            }`}
+          >
+            <Camera className="inline-block w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            All Events
+          </button>
+          <button
+            onClick={() => setFilter('wedding')}
+            className={`px-3 sm:px-6 py-2 rounded-full transition-all text-xs sm:text-sm ${
+              filter === 'wedding'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
+                : 'bg-gray-800/80 text-gray-400 hover:bg-gray-700'
+            }`}
+          >
+            <Heart className="inline-block w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            Weddings
+          </button>
+          <button
+            onClick={() => setFilter('corporate')}
+            className={`px-3 sm:px-6 py-2 rounded-full transition-all text-xs sm:text-sm ${
+              filter === 'corporate'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
+                : 'bg-gray-800/80 text-gray-400 hover:bg-gray-700'
+            }`}
+          >
+            <Building2 className="inline-block w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            Corporate
+          </button>
+        </motion.div>
 
-        {loading ? (
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Gallery Grid */}
+        <motion.div
+          variants={containerVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
+        >
+          <AnimatePresence>
             {displayedEvents.map((event, index) => (
               <motion.div
-                key={index}
-                className="group bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ y: -8 }}
+                key={event.id}
+                variants={itemVariants}
+                whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
               >
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    
-                    <div>
-                      <h3 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
-                        {event.category}
-                      </h3>
-                  
-                    </div>
-                    {event.videos.length > 0 && (
-                      <motion.button
-                        className="ml-auto w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center hover:bg-emerald-500/20 transition-colors"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setSelectedMedia({ type: 'video', url: event.videos[0] })}
-                      >
-                        <Play size={16} className="text-emerald-400 ml-0.5" />
-                      </motion.button>
-                    )}
+                <div className="relative h-40 sm:h-48 lg:h-56 overflow-hidden">
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent"></div>
+                  <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex space-x-2">
+                    <motion.button
+                      className="p-1.5 sm:p-2 bg-black/50 backdrop-blur-md rounded-full text-emerald-400 hover:text-emerald-300 transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Video className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </motion.button>
+                    <motion.button
+                      className="p-1.5 sm:p-2 bg-black/50 backdrop-blur-md rounded-full text-emerald-400 hover:text-emerald-300 transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <Image className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </motion.button>
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    {event.images.map((img, idx) => (
-                      <motion.div
-                        key={idx}
-                        className="relative overflow-hidden rounded-lg aspect-[4/3] border border-emerald-500/20"
-                        whileHover={{ scale: 1.03 }}
-                      >
-                        <img
-                          src={img}
-                          alt={`${event.category} - Image ${idx + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          onClick={() => setSelectedMedia({ type: 'image', url: img })}
-                          loading="lazy"
-                        />
-                        <div 
-                          className="absolute inset-0 bg-gradient-to-t from-emerald-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                          onClick={() => setSelectedMedia({ type: 'image', url: img })}
-                        />
-                      </motion.div>
-                    ))}
+                  <motion.div
+                    className="absolute top-3 sm:top-4 right-3 sm:right-4 text-emerald-400"
+                    animate={{
+                      rotate: [0, 15, 0, -15, 0],
+                      scale: [1, 1.2, 1]
+                    }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  >
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                  </motion.div>
+                </div>
+                <div className="p-4 sm:p-6 relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                      {event.type === 'wedding' ? (
+                        <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400" />
+                      ) : (
+                        <Building2 className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400" />
+                      )}
+                      <span className="text-xs sm:text-sm text-emerald-400">{event.date}</span>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-2">
+                      <span className="bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
+                        {event.title}
+                      </span>
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-400 line-clamp-2">{event.description}</p>
                   </div>
                 </div>
               </motion.div>
             ))}
-          </div>
-        )}
-        
+          </AnimatePresence>
+        </motion.div>
+
+        {/* View All Events Button */}
         {filteredEvents.length > 3 && (
-          <motion.div 
-            className="mt-16 text-center "
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
+          <motion.div variants={itemVariants} className="mt-8 sm:mt-12 lg:mt-16 text-center">
             <motion.button
-              className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 "
+              onClick={() => setExpanded(!expanded)}
+              className="px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 text-xs sm:text-sm hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setShowAll(!showAll)}
             >
-              <span>{showAll ? 'Show Less' : 'View All Events'}</span>
-              <Sparkles className="w-5 h-5 " />
+              <span>{expanded ? 'Show Less' : 'View All Events'}</span>
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
             </motion.button>
           </motion.div>
         )}
-      </div>
-
-      <AnimatePresence>
-        {selectedMedia && (
-          <motion.div
-            className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 sm:p-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedMedia(null)}
-          >
-            <motion.button
-              className="absolute top-6 right-6 w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center hover:bg-emerald-500/20 transition-colors z-10"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setSelectedMedia(null)}
-            >
-              <X size={20} className="text-emerald-400" />
-            </motion.button>
-            
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="relative max-w-5xl max-h-[80vh] rounded-lg overflow-hidden shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {selectedMedia.type === 'image' ? (
-                <img
-                  src={selectedMedia.url}
-                  alt="Gallery image"
-                  className="max-w-full max-h-[80vh] object-contain"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="relative bg-black rounded-lg overflow-hidden">
-                  <video
-                    src={selectedMedia.url}
-                    controls
-                    autoPlay
-                    className="max-w-full max-h-[80vh]"
-                  />
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-600" />
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
     </section>
   );
 };

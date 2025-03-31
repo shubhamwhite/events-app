@@ -7,6 +7,7 @@ import Service from '../pages/Service'
 import Testimonial from '../pages/Testimonials'
 import Contact from '../pages/Contact'
 import Store from '../pages/BookStore'
+import EventBlog from '../pages/EventBlog'
 
 export const router = createBrowserRouter([
     {
@@ -37,5 +38,10 @@ export const router = createBrowserRouter([
     {
         path: '/store',
         Component: Store,
+    }
+    ,
+    {
+        path: '/blog',
+        Component: EventBlog,
     }
 ])

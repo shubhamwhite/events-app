@@ -126,15 +126,13 @@ const Services = () => {
     },
   };
 
-  // Display only first 3 services if showAll is false
   const displayedServices = showAll ? services : services.slice(0, 3);
 
   return (
-    <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Floating Elements */}
+    <section className="relative min-h-[50%] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-50 right-20 w-72 h-72 rounded-full bg-emerald-500/20 blur-3xl"
+          className="absolute top-50 right-20 w-60 sm:w-72 h-60 sm:h-72 rounded-full bg-emerald-500/20 blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             x: [0, -40, 0],
@@ -154,16 +152,16 @@ const Services = () => {
         animate="visible"
         variants={containerVariants}
       >
-        <motion.div className="text-center mb-16" variants={itemVariants}>
+        <motion.div className="text-center mb-10 sm:mb-16" variants={itemVariants}>
           <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 inline-block mb-4">
             What We Offer
           </span>
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-transparent bg-clip-text">
               Our Services
             </span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
             Discover our comprehensive range of event planning services designed
             to make your special occasions truly memorable.
           </p>
@@ -174,12 +172,12 @@ const Services = () => {
             className="flex justify-center items-center py-20"
             variants={itemVariants}
           >
-            <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 sm:w-16 h-12 sm:h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
           </motion.div>
         ) : (
           <AnimatePresence>
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
               variants={containerVariants}
             >
               {displayedServices.map((service, index) => (
@@ -193,22 +191,21 @@ const Services = () => {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <div className="p-8 relative overflow-hidden">
-                    {/* Gradient Overlay */}
+                  <div className="p-6 sm:p-8 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
                     <div className="relative z-10">
-                      <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center overflow-hidden group-hover:bg-emerald-500/20 transition-all duration-300">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center overflow-hidden group-hover:bg-emerald-500/20 transition-all duration-300">
                         <img src={service.image} className="w-full h-full object-cover filter invert p-2"/>
                       </div>
 
-                      <h3 className="text-xl font-bold mt-6 mb-4">
+                      <h3 className="text-lg sm:text-xl font-bold mt-4 sm:mt-6 mb-3 sm:mb-4">
                         <span className="bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
                           {service.title}
                         </span>
                       </h3>
 
-                      <p className="text-gray-400 mb-6">{service.description}</p>
+                      <p className="text-gray-400 text-sm sm:text-base">{service.description}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -217,15 +214,15 @@ const Services = () => {
           </AnimatePresence>
         )}
 
-        <div className="flex flex-col gap-8 items-center mt-16">
+        <div className="flex flex-col gap-6 sm:gap-8 items-center mt-10 sm:mt-16">
           <NavLink to="/service">
             <motion.button
-              className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hover:cursor-pointer"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 text-sm sm:text-base hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hover:cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span>View All Service</span>
-              <Sparkles className="w-5 h-5" />
+              <span>View All Services</span>
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
           </NavLink>
         </div>

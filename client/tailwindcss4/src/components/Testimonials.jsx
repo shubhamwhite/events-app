@@ -82,7 +82,7 @@ const Testimonials = () => {
     return Array(5).fill(0).map((_, index) => (
       <Star 
         key={index} 
-        size={18} 
+        size={16} 
         className={`${index < rating ? "text-emerald-500 fill-emerald-500" : "text-gray-300"}`} 
       />
     ));
@@ -109,12 +109,10 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      
-      {/* Floating Elements */}
+    <section className="relative min-h-[50%] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-50 right-20 w-72 h-72 rounded-full bg-emerald-500/20 blur-3xl"
+          className="absolute top-50 right-20 w-60 sm:w-72 h-60 sm:h-72 rounded-full bg-emerald-500/20 blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             x: [0, -40, 0],
@@ -126,7 +124,6 @@ const Testimonials = () => {
             repeatType: "reverse"
           }}
         />
-      
       </div>
 
       <motion.div
@@ -136,73 +133,75 @@ const Testimonials = () => {
         variants={containerVariants}
       >
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-10 sm:mb-16"
           variants={itemVariants}
         >
-          <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 inline-block mb-4">
+          <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-xs sm:text-sm font-medium border border-emerald-500/20 inline-block mb-4">
             Client Stories
           </span>
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-transparent bg-clip-text">
               What Our Clients Say
             </span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
             Discover why our clients trust us with their most important events and celebrations.
           </p>
         </motion.div>
 
         {loading ? (
           <motion.div
-            className="flex justify-center items-center py-20"
+            className="flex justify-center items-center py-12 sm:py-20"
             variants={itemVariants}
           >
-            <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 sm:w-16 h-12 sm:h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
           </motion.div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
             variants={containerVariants}
           >
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
-                className="group bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300"
+                className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
                 variants={itemVariants}
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
               >
-                <div className="p-8">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="relative">
-                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-emerald-500/20">
-                        <img
-                          src={testimonial.image}
-                          alt={testimonial.reviewer}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                        />
+                <div className="p-6 sm:p-8 relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                      <div className="relative">
+                        <div className="w-12 sm:w-16 h-12 sm:h-16 rounded-full overflow-hidden border-2 border-emerald-500/20">
+                          <img
+                            src={testimonial.image}
+                            alt={testimonial.reviewer}
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          />
+                        </div>
+                        <motion.div 
+                          className="absolute -bottom-1 -right-1 w-5 sm:w-6 h-5 sm:h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 0.5 + index * 0.2, type: "spring" }}
+                        >
+                          <Quote size={10} className="sm:w-3 sm:h-3" />
+                        </motion.div>
                       </div>
-                      <motion.div 
-                        className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.5 + index * 0.2, type: "spring" }}
-                      >
-                        <Quote size={12} />
-                      </motion.div>
+                      <div>
+                        <h3 className="text-base sm:text-lg font-bold text-emerald-400">{testimonial.reviewer}</h3>
+                        <p className="text-xs sm:text-sm text-gray-400">{testimonial.position}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-emerald-400">{testimonial.reviewer}</h3>
-                      
+                    
+                    <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">{testimonial.description}</p>
+                    
+                    <div className="flex items-center gap-1">
+                      {renderStars(testimonial.rating)}
                     </div>
                   </div>
-                  
-                 
-                  <p className="text-gray-400 mb-6">{testimonial.description}</p>
-                  
-                  <div className="flex items-center gap-1">
-                    {renderStars(testimonial.rating)}
-                  </div>
-                  
                 </div>
               </motion.div>
             ))}
@@ -210,16 +209,16 @@ const Testimonials = () => {
         )}
         
         <motion.div
-          className="mt-16 text-center"
+          className="mt-10 sm:mt-16 text-center"
           variants={itemVariants}
         >
           <motion.button
-            className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hover:cursor-pointer"
+            className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 text-sm sm:text-base hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hover:cursor-pointer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <span>View All Testimonials</span>
-            <Quote className="w-5 h-5" />
+            <Quote className="w-4 h-4 sm:w-5 sm:h-5" />
           </motion.button>
         </motion.div>
       </motion.div>
