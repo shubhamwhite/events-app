@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Star, Upload, Send, Home, ChevronRight, User, Briefcase, MessageSquare } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Star, Upload, Send, Home, ChevronRight, User, MessageSquare } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Testimonials = () => {
   const [formData, setFormData] = useState({
@@ -43,16 +43,28 @@ const Testimonials = () => {
 
   return (
     <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
-      {/* Floating Elements */}
-      
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-50 right-20 w-60 sm:w-72 h-60 sm:h-72 rounded-full bg-emerald-500/20 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, -40, 0],
+            y: [0, 30, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+        />
+      </div>
+
       <motion.div
         className="relative z-10 max-w-7xl mx-auto"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
-
-        {/* Breadcrumb Navigation */}
         <motion.nav className="mb-8" variants={itemVariants}>
           <ol className="flex items-center space-x-2 text-sm">
             <li className="flex items-center">
@@ -87,115 +99,115 @@ const Testimonials = () => {
 
         <motion.form 
           onSubmit={handleSubmit} 
-          className="space-y-8"
+          className="max-w-2xl mx-auto"
           variants={containerVariants}
         >
           <motion.div 
-            className="bg-black/40 backdrop-blur-sm rounded-2xl border border-emerald-500/20 p-8"
+            className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10 p-8"
             variants={itemVariants}
+            whileHover={{ y: -4, transition: { duration: 0.3 } }}
           >
-            {/* Profile Image */}
-            <motion.div 
-              className="flex flex-col items-center mb-8"
-              variants={itemVariants}
-            >
-              <div className="relative w-32 h-32 mb-4">
-                <img
-                  src={formData.imageUrl}
-                  alt="Profile"
-                  className="w-full h-full rounded-full object-cover border-4 border-emerald-500/20"
-                />
-                <motion.button
-                  type="button"
-                  className="absolute bottom-0 right-0 p-2 bg-emerald-500 rounded-full text-white hover:bg-emerald-600 transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Upload className="w-4 h-4" />
-                </motion.button>
-              </div>
-            </motion.div>
+            <div className="relative z-10">
+              {/* Profile Image */}
+              <motion.div 
+                className="flex flex-col items-center mb-8"
+                variants={itemVariants}
+              >
+                <div className="relative w-32 h-32 mb-4">
+                  <img
+                    src={formData.imageUrl}
+                    alt="Profile"
+                    className="w-full h-full rounded-full object-cover border-4 border-emerald-500/20"
+                  />
+                  <motion.button
+                    type="button"
+                    className="absolute bottom-0 right-0 p-2 bg-emerald-500 rounded-full text-white hover:bg-emerald-600 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Upload className="w-4 h-4" />
+                  </motion.button>
+                </div>
+              </motion.div>
 
-            {/* Personal Information */}
-            <div className=" mb-6">
-              <div className="relative">
+              {/* Personal Information */}
+              <div className="mb-6">
+                <div className="relative">
+                  <label className="block text-emerald-400 text-sm font-medium mb-2">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-emerald-400" size={18} />
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 pl-12 text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Message */}
+              <div className="mb-6">
                 <label className="block text-emerald-400 text-sm font-medium mb-2">
-                  Full Name
+                  Your Message
                 </label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-emerald-400" size={18} />
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 pl-12 text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
-                    placeholder="John Doe"
+                  <MessageSquare className="absolute left-4 top-6 text-emerald-400" size={18} />
+                  <textarea
+                    value={formData.message}
+                    onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                    className="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 pl-12 text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all min-h-[150px]"
+                    placeholder="Share your experience with us..."
                   />
                 </div>
               </div>
-            
-                </div>
-    
-     
 
-            {/* Message */}
-            <div className="mb-6">
-              <label className="block text-emerald-400 text-sm font-medium mb-2">
-                Your Message
-              </label>
-              <div className="relative">
-                <MessageSquare className="absolute left-4 top-6 text-emerald-400" size={18} />
-                <textarea
-                  value={formData.message}
-                  onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                  className="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 pl-12 text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all min-h-[150px]"
-                  placeholder="Share your experience with us..."
-                />
-              </div>
-            </div>
-
-                   {/* Rating */}
-          <div className="mb-6">
-              <label className="block text-emerald-400 text-sm font-medium mb-2">
-                Rating
-              </label>
-              <div className="flex gap-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <motion.button
-                  key={star}
-                  type="button"
-                  onClick={() => handleStarClick(star)}
-                  className={`transition-colors ${
-                    star <= formData.rating
-                    ? 'text-yellow-400'
-                    : 'text-gray-600'
-                    }`}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
+              {/* Rating */}
+              <div className="mb-6">
+                <label className="block text-emerald-400 text-sm font-medium mb-2">
+                  Rating
+                </label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <motion.button
+                      key={star}
+                      type="button"
+                      onClick={() => handleStarClick(star)}
+                      className={`transition-colors ${
+                        star <= formData.rating
+                        ? 'text-yellow-400'
+                        : 'text-gray-600'
+                      }`}
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
                     >
-                    <Star className="w-8 h-8 fill-current" />
-                  </motion.button>
-                ))}
+                      <Star className="w-8 h-8 fill-current" />
+                    </motion.button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Submit Button */}
-            <motion.button
-              type="submit"
-              className="w-full px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <span className="flex items-center gap-2">
-                Submit Testimonial
-                <motion.div
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <Send className="w-5 h-5" />
-                </motion.div>
-              </span>
-            </motion.button>
+              {/* Submit Button */}
+              <motion.button
+                type="submit"
+                className="w-full px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <span className="flex items-center gap-2">
+                  Submit Testimonial
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <Send className="w-5 h-5" />
+                  </motion.div>
+                </span>
+              </motion.button>
+            </div>
           </motion.div>
         </motion.form>
       </motion.div>

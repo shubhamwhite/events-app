@@ -126,7 +126,7 @@ const Navbar = () => {
                 >
                   <NavLink
                     to="/store"
-                    className="block px-4 py-2 rounded-md text-base font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-colors duration-200 flex items-center gap-2"
+                    className="block px-4 py-2 rounded-md text-base font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-colors duration-200 items-center gap-2"
                     onClick={() => setIsOpen(false)}
                   >
                     <BookOpen size={16} />

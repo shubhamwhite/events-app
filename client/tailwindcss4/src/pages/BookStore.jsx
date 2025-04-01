@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Star, ChevronRight, Home, Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingCart, Heart, Star, ChevronRight, Home, Search, Sparkles } from 'lucide-react';
 
 const books = [
   {
@@ -45,6 +45,7 @@ const BookStore = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [cart, setCart] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const [showAll, setShowAll] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -68,8 +69,8 @@ const BookStore = () => {
     }
   };
 
-  const addToCart = (book) => {
-    setCart([...cart, book]);
+  const addToCart = (bookId) => {
+    setCart([...cart, bookId]);
   };
 
   const toggleFavorite = (bookId) => {
@@ -85,34 +86,23 @@ const BookStore = () => {
     book.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const displayedBooks = showAll ? filteredBooks : filteredBooks.slice(0, 3);
+
   return (
-    <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 bg-gray-900">
+    <section className="relative min-h-screen py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-black">
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-20 right-20 w-96 h-96 rounded-full bg-emerald-500/20 blur-3xl"
+          className="absolute top-50 right-20 w-72 h-72 rounded-full bg-emerald-500/20 blur-3xl"
           animate={{
-            scale: [1, 1.3, 1],
-            x: [0, -50, 0],
-            y: [0, 40, 0]
+            scale: [1, 1.2, 1],
+            x: [0, -40, 0],
+            y: [0, 30, 0],
           }}
           transition={{
-            duration: 20,
+            duration: 18,
             repeat: Infinity,
-            repeatType: "reverse"
-          }}
-        />
-        <motion.div
-          className="absolute bottom-50 left-20 w-96 h-96 rounded-full bg-teal-500/20 blur-3xl"
-          animate={{
-            scale: [1, 1.3, 1],
-            x: [0, 50, 0],
-            y: [0, -40, 0]
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "reverse"
+            repeatType: "reverse",
           }}
         />
       </div>
@@ -136,8 +126,11 @@ const BookStore = () => {
 
         {/* Header */}
         <div className="text-center mb-12">
+          <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 inline-block mb-4">
+            Our Collection
+          </span>
           <motion.h1 
-            className="text-4xl sm:text-5xl font-bold mb-4"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -146,7 +139,7 @@ const BookStore = () => {
             </span>
           </motion.h1>
           <motion.p 
-            className="text-gray-400 text-lg max-w-2xl mx-auto"
+            className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -164,91 +157,122 @@ const BookStore = () => {
               placeholder="Search books by title or author..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-black/40 border border-emerald-500/20 rounded-xl px-12 py-4 text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              className="w-full bg-black/40 backdrop-blur-sm border border-emerald-500/20 rounded-xl px-12 py-3 text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all text-sm sm:text-base"
             />
           </div>
         </div>
 
         {/* Book Grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {filteredBooks.map((book) => (
-            <motion.div
-              key={book.id}
-              variants={itemVariants}
-              className="bg-black/40 backdrop-blur-sm rounded-2xl border border-emerald-500/20 overflow-hidden hover:border-emerald-500/40 transition-all duration-300"
-            >
-              <div className="relative">
-                <img
-                  src={book.image}
-                  alt={book.title}
-                  className="w-full h-48 object-cover"
-                />
-                <button
-                  onClick={() => toggleFavorite(book.id)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors"
-                >
-                  <Heart
-                    className={`w-5 h-5 ${
-                      favorites.includes(book.id) ? "fill-red-500 text-red-500" : ""
-                    }`}
+        <AnimatePresence>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {displayedBooks.map((book) => (
+              <motion.div
+                key={book.id}
+                variants={itemVariants}
+                className="group bg-black/40 backdrop-blur-sm rounded-2xl border border-emerald-500/20 overflow-hidden hover:border-emerald-500/40 transition-all duration-300"
+                whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              >
+                <div className="relative aspect-[4/3]">
+                  <img
+                    src={book.image}
+                    alt={book.title}
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
                   />
-                </button>
-              </div>
-              
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-white mb-2">{book.title}</h3>
-                <p className="text-gray-400 mb-2">{book.author}</p>
-                <p className="text-sm text-gray-500 mb-4">{book.description}</p>
-                
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center">
-                    <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                    <span className="text-gray-400 ml-1">{book.rating}</span>
-                  </div>
-                  <span className="text-2xl font-bold text-emerald-400">${book.price}</span>
+                  <button
+                    onClick={() => toggleFavorite(book.id)}
+                    className="absolute top-4 right-4 p-2 rounded-full bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 transition-colors"
+                  >
+                    <Heart
+                      className={`w-4 h-4 ${
+                        favorites.includes(book.id) ? "fill-red-500 text-red-500" : ""
+                      }`}
+                    />
+                  </button>
                 </div>
                 
+                <div className="p-6">
+                  <div className="flex items-center justify-between text-sm text-gray-400 mb-2">
+                    <span>{book.author}</span>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      <span>{book.rating}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-white group-hover:text-emerald-400 transition-colors line-clamp-1">
+                    {book.title}
+                  </h3>
+                  <p className="text-sm text-gray-400 mb-4 line-clamp-2">{book.description}</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
+                      ${book.price}
+                    </span>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => addToCart(book.id)}
+                      className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white text-sm font-medium hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 flex items-center gap-2"
+                    >
+                      <ShoppingCart className="w-4 h-4" />
+                      Add to Cart
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* View More Button */}
+        {filteredBooks.length > 3 && (
+          <div className="flex justify-center mt-12">
+            <motion.button
+              className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowAll(!showAll)}
+            >
+              <span>{showAll ? 'Show Less' : 'View All Books'}</span>
+              <Sparkles className="w-5 h-5" />
+            </motion.button>
+          </div>
+        )}
+
+        {/* Cart Preview */}
+        <AnimatePresence>
+          {cart.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="fixed bottom-8 right-8 bg-black/80 backdrop-blur-sm rounded-xl border border-emerald-500/20 p-4 shadow-lg"
+            >
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <ShoppingCart className="text-emerald-400 w-5 h-5" />
+                  <span className="absolute -top-2 -right-2 bg-emerald-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                    {cart.length}
+                  </span>
+                </div>
+                <span className="text-white text-sm font-medium">
+                  {cart.length} {cart.length === 1 ? 'item' : 'items'} in cart
+                </span>
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => addToCart(book)}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white text-sm font-medium hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
                 >
-                  <ShoppingCart className="w-5 h-5" />
-                  Add to Cart
+                  Checkout
                 </motion.button>
               </div>
             </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Cart Preview */}
-        {cart.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="fixed bottom-8 right-8 bg-black/80 backdrop-blur-sm rounded-2xl border border-emerald-500/20 p-4"
-          >
-            <div className="flex items-center gap-3">
-              <ShoppingCart className="text-emerald-400" />
-              <span className="text-white">
-                {cart.length} {cart.length === 1 ? 'item' : 'items'} in cart
-              </span>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 bg-emerald-500 rounded-xl text-white text-sm font-semibold hover:bg-emerald-600 transition-colors"
-              >
-                Checkout
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

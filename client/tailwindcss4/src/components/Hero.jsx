@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, ChevronDown, Star, ChevronUp, ArrowLeft, ArrowRight, Clock, MapPin, Sparkles } from "lucide-react";
-import { NavLink } from "react-router";
+import { Calendar, ChevronUp, Clock, MapPin, Sparkles } from "lucide-react";
+import { Link } from "react-router";
 
 const Hero = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -55,7 +55,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="pt-10 relative min-h-[50%] bg-[#1a1a1a] overflow-hidden">
+    <div className=" relative min-h-[50%] bg-[#1a1a1a] overflow-hidden">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0" style={{
@@ -187,16 +187,16 @@ const Hero = () => {
                 transition={{ delay: 0.8 }}
                 className="flex flex-col sm:flex-row gap-4"
               >
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  <NavLink to="/blog">
+                <Link to="/blog">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
+                  >
+                    <Sparkles className="w-5 h-5" />
                     <span>Event Blog</span>
-                  </NavLink>
-                </motion.button>
+                  </motion.button>
+                </Link>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -213,34 +213,34 @@ const Hero = () => {
 
       {/* Scroll to Top Button */}
       <AnimatePresence>
-  {showScrollTop && (
-    <motion.div
-      className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 z-50 flex items-center gap-2"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-    >
-      {/* Hidden on mobile, visible from sm breakpoint (640px) */}
-      <motion.div
-        className="hidden sm:block px-3 py-1 rounded-full bg-emerald-500/10 backdrop-blur-lg border border-emerald-500/20 text-emerald-400 text-sm"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-      >
-        Scroll to top
-      </motion.div>
-      
-      <motion.button
-        onClick={handleScrollTop}
-        className="p-2 sm:p-3 rounded-full bg-emerald-500/10 backdrop-blur-lg border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-all duration-300"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        <ChevronUp className="w-5 h-5 sm:w-8 sm:h-8" />
-      </motion.button>
-    </motion.div>
-  )}
-</AnimatePresence>  
+        {showScrollTop && (
+          <motion.div
+            className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 z-50 flex items-center gap-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+          >
+            {/* Hidden on mobile, visible from sm breakpoint (640px) */}
+            <motion.div
+              className="hidden sm:block px-3 py-1 rounded-full bg-emerald-500/10 backdrop-blur-lg border border-emerald-500/20 text-emerald-400 text-sm"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+            >
+              Scroll to top
+            </motion.div>
+            
+            <motion.button
+              onClick={handleScrollTop}
+              className="p-2 sm:p-3 rounded-full bg-emerald-500/10 backdrop-blur-lg border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <ChevronUp className="w-5 h-5 sm:w-8 sm:h-8" />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>  
     </div>
   );
 };

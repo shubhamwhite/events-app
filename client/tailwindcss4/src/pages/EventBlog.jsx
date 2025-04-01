@@ -79,11 +79,11 @@ const EventBlog = () => {
   const displayedBlogs = showAll ? blogs : blogs.slice(0, 3);
 
   return (
-    <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
+    <section className="relative min-h-screen py-12 sm:py-16 lg:py-20 px-3 sm:px-4 lg:px-6 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-50 right-20 w-72 h-72 rounded-full bg-emerald-500/20 blur-3xl"
+          className="absolute top-50 right-20 w-48 sm:w-72 h-48 sm:h-72 rounded-full bg-emerald-500/20 blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             x: [0, -40, 0],
@@ -103,49 +103,49 @@ const EventBlog = () => {
         animate="visible"
         variants={containerVariants}
       >
-        <nav className="mb-8">
+        <nav className="mb-6 sm:mb-8">
           <motion.ol 
-            className="flex items-center space-x-2 text-sm"
+            className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             <li className="flex items-center">
               <a href="/" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-                <Home size={16} />
+                <Home size={14} className="sm:w-4 sm:h-4" />
                 <span>Home</span>
               </a>
             </li>
             <li className="flex items-center text-emerald-400">
-              <ChevronRight size={16} />
+              <ChevronRight size={14} className="sm:w-4 sm:h-4" />
             </li>
             <li className="text-emerald-200">Blog</li>
           </motion.ol>
         </nav>
 
-        <motion.div className="text-center mb-16" variants={itemVariants}>
-          <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 inline-block mb-4">
+        <motion.div className="text-center mb-10 sm:mb-16" variants={itemVariants}>
+          <span className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-xs sm:text-sm font-medium border border-emerald-500/20 inline-block mb-3 sm:mb-4">
             Our Blog
           </span>
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-6">
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-transparent bg-clip-text">
               Latest Event Planning Insights
             </span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-400 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-4">
             Stay updated with the latest trends, tips, and stories from the world of event planning and management.
           </p>
         </motion.div>
 
         <AnimatePresence>
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
             variants={containerVariants}
           >
             {displayedBlogs.map((blog, index) => (
               <motion.article
                 key={index}
-                className="group bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300"
+                className="group bg-black/40 backdrop-blur-sm rounded-xl sm:rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300"
                 variants={itemVariants}
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
                 initial={{ opacity: 0, y: 20 }}
@@ -153,32 +153,32 @@ const EventBlog = () => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-40 sm:h-48 overflow-hidden">
                   <img 
                     src={blog.image} 
                     alt={blog.title}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
                   />
-                  <div className="absolute top-4 left-4 px-3 py-1 bg-emerald-500/90 rounded-full text-xs text-white">
+                  <div className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2 py-1 sm:px-3 sm:py-1 bg-emerald-500/90 rounded-full text-[10px] sm:text-xs text-white">
                     {blog.category}
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between text-sm text-gray-400 mb-3">
+                <div className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between text-xs sm:text-sm text-gray-400 mb-2 sm:mb-3">
                     <span>{blog.date}</span>
                     <span>{blog.readTime}</span>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-white group-hover:text-emerald-400 transition-colors">
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-2 sm:mb-3 text-white group-hover:text-emerald-400 transition-colors line-clamp-2">
                     {blog.title}
                   </h3>
-                  <p className="text-gray-400 mb-4">
+                  <p className="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4 line-clamp-2">
                     {blog.excerpt}
                   </p>
                   <a 
                     href="#" 
-                    className="inline-flex items-center text-emerald-400 hover:text-emerald-300 transition-colors"
+                    className="inline-flex items-center text-emerald-400 hover:text-emerald-300 transition-colors text-sm"
                   >
-                    Read More <ArrowRight size={16} className="ml-2" />
+                    Read More <ArrowRight size={14} className="ml-1 sm:ml-2 sm:w-4 sm:h-4" />
                   </a>
                 </div>
               </motion.article>
@@ -186,17 +186,17 @@ const EventBlog = () => {
           </motion.div>
         </AnimatePresence>
 
-        <div className="flex flex-col gap-8 items-center mt-16">
+        <div className="flex flex-col gap-6 sm:gap-8 items-center mt-10 sm:mt-16">
           {blogs.length > 3 && (
             <motion.button
-              className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg sm:rounded-xl text-white text-sm sm:text-base font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowAll(!showAll)}
               variants={itemVariants}
             >
               <span>{showAll ? 'Show Less' : 'View All Posts'}</span>
-              <Sparkles className="w-5 h-5" />
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
           )}
         </div>
