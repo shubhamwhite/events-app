@@ -84,7 +84,7 @@ const EventGallery = () => {
   };
 
   return (
-    <section className="relative min-h-[50%] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
+    <section className="relative min-h-[100vh] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute bottom-50 left-20 w-60 sm:w-72 h-60 sm:h-72 rounded-full bg-teal-500/20 blur-3xl"

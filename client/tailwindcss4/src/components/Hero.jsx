@@ -55,7 +55,7 @@ const Hero = () => {
   };
 
   return (
-    <div className=" relative min-h-[50%] bg-[#1a1a1a] overflow-hidden">
+    <div className="relative min-h-[50%] bg-[#1a1a1a] overflow-hidden">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0" style={{

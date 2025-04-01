@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Intro from '../components/Intro';
 import EventGallery from '../components/EventGallery';
 import FAQ from '../components/Faq';
@@ -10,10 +10,10 @@ import Testimonials from '../components/Testimonials';
 
 const Home = () => {
   return (
-    <div className="relative">
+    <div className="relative min-h-screen">
       <main className="bg-[#1a1a1a]">
         <div className="relative">
-          <div className="absolute inset-0 opacity-20">
+          <div className="inset-0 opacity-20">
             <div
               className="absolute inset-0"
               style={{
@@ -38,4 +38,4 @@ const Home = () => {
   );
 }
 
-export default Home
+export default Home;

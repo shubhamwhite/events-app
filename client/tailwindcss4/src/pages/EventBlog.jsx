@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Home, ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
+import { Home, ChevronRight, ArrowRight, ChevronLeftCircle, ChevronRightCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const EventBlog = () => {
-  const [showAll, setShowAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 3;
 
   const blogs = [
     {
@@ -76,7 +77,16 @@ const EventBlog = () => {
     },
   };
 
-  const displayedBlogs = showAll ? blogs : blogs.slice(0, 3);
+  // Calculate pagination
+  const totalPages = Math.ceil(blogs.length / postsPerPage);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = blogs.slice(indexOfFirstPost, indexOfLastPost);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <section className="relative min-h-screen py-12 sm:py-16 lg:py-20 px-3 sm:px-4 lg:px-6 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
@@ -137,69 +147,114 @@ const EventBlog = () => {
           </p>
         </motion.div>
 
-        <AnimatePresence>
-          <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
-            variants={containerVariants}
-          >
-            {displayedBlogs.map((blog, index) => (
-              <motion.article
-                key={index}
-                className="group bg-black/40 backdrop-blur-sm rounded-xl sm:rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300"
-                variants={itemVariants}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-              >
-                <div className="relative h-40 sm:h-48 overflow-hidden">
-                  <img 
-                    src={blog.image} 
-                    alt={blog.title}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2 py-1 sm:px-3 sm:py-1 bg-emerald-500/90 rounded-full text-[10px] sm:text-xs text-white">
-                    {blog.category}
-                  </div>
-                </div>
-                <div className="p-4 sm:p-6">
-                  <div className="flex items-center justify-between text-xs sm:text-sm text-gray-400 mb-2 sm:mb-3">
-                    <span>{blog.date}</span>
-                    <span>{blog.readTime}</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-2 sm:mb-3 text-white group-hover:text-emerald-400 transition-colors line-clamp-2">
-                    {blog.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4 line-clamp-2">
-                    {blog.excerpt}
-                  </p>
-                  <a 
-                    href="#" 
-                    className="inline-flex items-center text-emerald-400 hover:text-emerald-300 transition-colors text-sm"
-                  >
-                    Read More <ArrowRight size={14} className="ml-1 sm:ml-2 sm:w-4 sm:h-4" />
-                  </a>
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-
-        <div className="flex flex-col gap-6 sm:gap-8 items-center mt-10 sm:mt-16">
-          {blogs.length > 3 && (
-            <motion.button
-              className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg sm:rounded-xl text-white text-sm sm:text-base font-semibold inline-flex items-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowAll(!showAll)}
-              variants={itemVariants}
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentPage}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
             >
-              <span>{showAll ? 'Show Less' : 'View All Posts'}</span>
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-            </motion.button>
-          )}
+              {currentPosts.map((blog, index) => (
+                <motion.article
+                  key={blog.title}
+                  className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-xl sm:rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                >
+                  <div className="relative h-40 sm:h-48 overflow-hidden">
+                    <img 
+                      src={blog.image} 
+                      alt={blog.title}
+                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent"></div>
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2 py-1 sm:px-3 sm:py-1 bg-emerald-500/90 rounded-full text-[10px] sm:text-xs text-white">
+                      {blog.category}
+                    </div>
+                  </div>
+                  <div className="p-4 sm:p-6 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between text-xs sm:text-sm text-gray-400 mb-2 sm:mb-3">
+                        <span>{blog.date}</span>
+                        <span>{blog.readTime}</span>
+                      </div>
+                      <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-2 sm:mb-3">
+                        <span className="bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text group-hover:from-emerald-300 group-hover:to-teal-300 transition-all duration-300">
+                          {blog.title}
+                        </span>
+                      </h3>
+                      <p className="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4 line-clamp-2">
+                        {blog.excerpt}
+                      </p>
+                      <a 
+                        href="#" 
+                        className="inline-flex items-center text-emerald-400 hover:text-emerald-300 transition-colors text-sm"
+                      >
+                        Read More <ArrowRight size={14} className="ml-1 sm:ml-2 sm:w-4 sm:h-4" />
+                      </a>
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
+
+        {/* Pagination */}
+        <motion.div 
+          className="flex justify-center items-center mt-10 sm:mt-16 gap-2"
+          variants={itemVariants}
+        >
+          <motion.button
+            onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`p-2 rounded-lg transition-all duration-300 ${
+              currentPage === 1 
+                ? 'text-gray-600 cursor-not-allowed' 
+                : 'text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10'
+            }`}
+            whileHover={currentPage !== 1 ? { scale: 1.1 } : {}}
+            whileTap={currentPage !== 1 ? { scale: 0.9 } : {}}
+          >
+            <ChevronLeftCircle className="w-6 h-6 sm:w-8 sm:h-8" />
+          </motion.button>
+
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => paginate(index + 1)}
+              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg text-sm sm:text-base font-medium transition-all duration-300 ${
+                currentPage === index + 1
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white'
+                  : 'text-emerald-400 hover:bg-emerald-500/10'
+              }`}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {index + 1}
+            </motion.button>
+          ))}
+
+          <motion.button
+            onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`p-2 rounded-lg transition-all duration-300 ${
+              currentPage === totalPages 
+                ? 'text-gray-600 cursor-not-allowed' 
+                : 'text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10'
+            }`}
+            whileHover={currentPage !== totalPages ? { scale: 1.1 } : {}}
+            whileTap={currentPage !== totalPages ? { scale: 0.9 } : {}}
+          >
+            <ChevronRightCircle className="w-6 h-6 sm:w-8 sm:h-8" />
+          </motion.button>
+        </motion.div>
       </motion.div>
     </section>
   );

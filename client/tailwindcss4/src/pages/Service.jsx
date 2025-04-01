@@ -1,69 +1,135 @@
-import React, { useState } from "react";
-import { Send, Mail, Home, User, MessageSquare, Phone, ArrowRight, ChevronRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Package, Sparkles, Calendar,ChevronRight, Home , Users, Award, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { NavLink } from "react-router";
 
-const Contact = () => {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [status, setStatus] = useState("");
-  const [loading, setLoading] = useState(false);
+const Services = () => {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setStatus("");
-
-    try {
-      const response = await fetch("http://localhost:5000/api/v1/dashboard/contact/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, message, phone }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setStatus("Message sent successfully! We'll get back to you soon.");
-        setName("");
-        setPhone("");
-        setEmail("");
-        setMessage("");
-      } else {
-        setStatus(data.message || "Something went wrong. Please try again.");
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/v1/dashboard/service/get"
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setServices(data.events);
+        } else {
+          console.error("Error fetching services:", data.message);
+          setServices([
+            {
+              title: "Wedding Planning",
+              description:
+                "Create your dream wedding with our comprehensive planning services, from venue selection to day-of coordination.",
+              image: "wedding",
+            },
+            {
+              title: "Corporate Events",
+              description:
+                "Impress clients and motivate teams with professionally organized corporate events, conferences, and team-building activities.",
+              image: "corporate",
+            },
+            {
+              title: "Birthday Celebrations",
+              description:
+                "Make milestone birthdays unforgettable with custom themes, entertainment, and catering options for all ages.",
+              image: "birthday",
+            },
+            {
+              title: "Catering Services",
+              description:
+                "Delight your guests with gourmet cuisine tailored to your event theme and dietary requirements.",
+              image: "catering",
+            },
+            {
+              title: "Venue Selection",
+              description:
+                "Find the perfect location for your event with our venue sourcing and negotiation services.",
+              image: "venue",
+            },
+            {
+              title: "Event Coordination",
+              description:
+                "Relax and enjoy your event while our coordinators handle all the details and timing on the day.",
+              image: "coordination",
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error("Error fetching services:", error);
+        setServices([
+          {
+            title: "Wedding Planning",
+            description:
+              "Create your dream wedding with our comprehensive planning services, from venue selection to day-of coordination.",
+            image: "wedding",
+          },
+          {
+            title: "Corporate Events",
+            description:
+              "Impress clients and motivate teams with professionally organized corporate events, conferences, and team-building activities.",
+            image: "corporate",
+          },
+          {
+            title: "Birthday Celebrations",
+            description:
+              "Make milestone birthdays unforgettable with custom themes, entertainment, and catering options for all ages.",
+            image: "birthday",
+          },
+          {
+            title: "Catering Services",
+            description:
+              "Delight your guests with gourmet cuisine tailored to your event theme and dietary requirements.",
+            image: "catering",
+          },
+          {
+            title: "Venue Selection",
+            description:
+              "Find the perfect location for your event with our venue sourcing and negotiation services.",
+            image: "venue",
+          },
+          {
+            title: "Event Coordination",
+            description:
+              "Relax and enjoy your event while our coordinators handle all the details and timing on the day.",
+            image: "coordination",
+          },
+        ]);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      setStatus("Failed to send message. Please check your connection.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchServices();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
+        delayChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 100 }
-    }
+      transition: { type: "spring", stiffness: 100 },
+    },
   };
 
+  const displayedServices = showAll ? services : services.slice(0, 3);
+
   return (
-    <section className="relative min-h-screen py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
+    <section className="relative min-h-[100vh] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-50 right-20 w-60 sm:w-72 h-60 sm:h-72 rounded-full bg-emerald-500/20 blur-3xl"
@@ -86,209 +152,104 @@ const Contact = () => {
         animate="visible"
         variants={containerVariants}
       >
-        <motion.nav className="mb-6 sm:mb-8" variants={itemVariants}>
-          <ol className="flex items-center space-x-2 text-sm">
+
+<nav className="mb-6 sm:mb-8">
+          <motion.ol 
+            className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <li className="flex items-center">
               <a href="/" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-                <Home size={16} />
+                <Home size={14} className="sm:w-4 sm:h-4" />
                 <span>Home</span>
               </a>
             </li>
             <li className="flex items-center text-emerald-400">
-              <ChevronRight size={16} />
+              <ChevronRight size={14} className="sm:w-4 sm:h-4" />
             </li>
-            <li className="text-emerald-200">Contact</li>
-          </ol>
-        </motion.nav>
+            <li className="text-emerald-200">Blog</li>
+          </motion.ol>
+        </nav>
 
-        <motion.div
-          className="text-center mb-8 sm:mb-12 lg:mb-16"
-          variants={itemVariants}
-        >
+
+        <motion.div className="text-center mb-10 sm:mb-16" variants={itemVariants}>
           <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 inline-block mb-4">
-            Get in Touch
+            What We Offer
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-transparent bg-clip-text">
-              Contact Us
+              Our Services
             </span>
           </h2>
           <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
-            Have a question or want to work together? Drop us a message and we'll get back to you as soon as possible!
+            Discover our comprehensive range of event planning services designed
+            to make your special occasions truly memorable.
           </p>
         </motion.div>
 
-        <motion.div
-          className="max-w-4xl mx-auto"
-          variants={containerVariants}
-        >
+        {loading ? (
           <motion.div
-            className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10 grid md:grid-cols-5 gap-6"
+            className="flex justify-center items-center py-20"
             variants={itemVariants}
-            whileHover={{ y: -4, transition: { duration: 0.3 } }}
           >
-            {/* Contact info sidebar */}
-            <div className="md:col-span-2 bg-emerald-500/10 p-6 sm:p-8 text-white flex flex-col justify-between border-b md:border-b-0 md:border-r border-emerald-500/20">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold text-emerald-400 mb-4 sm:mb-6">Contact Information</h3>
-                <p className="mb-6 sm:mb-8 text-gray-400 text-sm sm:text-base">Fill out the form and we'll get back to you within 24 hours.</p>
-                
-                <div className="space-y-4 sm:space-y-6">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mr-4 text-emerald-400">
-                      <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </div>
-                    <span className="text-gray-400 text-sm sm:text-base">+1 (555) 123-4567</span>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mr-4 text-emerald-400">
-                      <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </div>
-                    <span className="text-gray-400 text-sm sm:text-base">contact@example.com</span>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mr-4 text-emerald-400">
-                      <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </div>
-                    <span className="text-gray-400 text-sm sm:text-base">@username</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-4 sm:pt-6 border-t border-emerald-500/20">
-                <p className="text-xs sm:text-sm text-gray-400">
-                  &copy; {new Date().getFullYear()} All rights reserved
-                </p>
-              </div>
-            </div>
-            
-            {/* Contact form */}
-            <div className="md:col-span-3 p-6 sm:p-8">
-              <AnimatePresence>
-                {status && (
-                  <motion.div 
-                    className={`mb-6 p-4 rounded-xl ${
-                      status.includes("successfully") 
-                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
-                        : "bg-red-500/10 text-red-400 border border-red-500/20"
-                    }`}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <p className="text-sm sm:text-base">{status}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
-                {/* Name Input */}
-                <div>
-                  <label htmlFor="name" className="text-xs sm:text-sm font-medium text-emerald-400 block mb-2">
-                    Your Name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-emerald-400" size={16} />
-                    <input
-                      id="name"
-                      type="text"
-                      placeholder="John Doe"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full p-3 sm:p-4 pl-10 sm:pl-12 text-sm sm:text-base bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Phone Input */}
-                <div>
-                  <label htmlFor="phone" className="text-xs sm:text-sm font-medium text-emerald-400 block mb-2">
-                    Phone Number
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-emerald-400" size={16} />
-                    <input
-                      id="phone"
-                      type="tel"
-                      placeholder="+1 (555) 123-4567"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full p-3 sm:p-4 pl-10 sm:pl-12 text-sm sm:text-base bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Email Input */}
-                <div>
-                  <label htmlFor="email" className="text-xs sm:text-sm font-medium text-emerald-400 block mb-2">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-emerald-400" size={16} />
-                    <input
-                      id="email"
-                      type="email"
-                      placeholder="john@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full p-3 sm:p-4 pl-10 sm:pl-12 text-sm sm:text-base bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Message Input */}
-                <div>
-                  <label htmlFor="message" className="text-xs sm:text-sm font-medium text-emerald-400 block mb-2">
-                    Your Message
-                  </label>
-                  <div className="relative">
-                    <MessageSquare className="absolute left-3 sm:left-4 top-4 text-emerald-400" size={16} />
-                    <textarea
-                      id="message"
-                      placeholder="How can we help you?"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      className="w-full p-3 sm:p-4 pl-10 sm:pl-12 text-sm sm:text-base bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-white placeholder-gray-500 focus:border-emerald-500/40 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all resize-none h-24 sm:h-32"
-                      required
-                    ></textarea>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <motion.button
-                  type="submit"
-                  className="w-full py-3 sm:py-4 px-6 sm:px-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 disabled:opacity-50 text-sm sm:text-base"
-                  disabled={loading}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span className="flex items-center gap-2">
-                    {loading ? "Sending..." : (
-                      <>
-                        Send Message
-                        <motion.div
-                          animate={{ x: [0, 5, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
-                          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                        </motion.div>
-                      </>
-                    )}
-                  </span>
-                </motion.button>
-              </form>
-            </div>
+            <div className="w-12 sm:w-16 h-12 sm:h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
           </motion.div>
-        </motion.div>
+        ) : (
+          <AnimatePresence>
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+              variants={containerVariants}
+            >
+              {displayedServices.map((service, index) => (
+                <motion.div
+                  key={index}
+                  className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
+                  variants={itemVariants}
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <div className="p-6 sm:p-8 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    <div className="relative z-10">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center overflow-hidden group-hover:bg-emerald-500/20 transition-all duration-300">
+                        <img src={service.image} className="w-full h-full object-cover filter invert p-2"/>
+                      </div>
+
+                      <h3 className="text-lg sm:text-xl font-bold mt-4 sm:mt-6 mb-3 sm:mb-4">
+                        <span className="bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
+                          {service.title}
+                        </span>
+                      </h3>
+
+                      <p className="text-gray-400 text-sm sm:text-base">{service.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        )}
+
+<div className="flex flex-col gap-6 sm:gap-8 items-center mt-10 sm:mt-16">
+          <motion.button
+            className="px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl text-white font-semibold inline-flex items-center gap-2 text-sm sm:text-base hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hover:cursor-pointer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowAll(!showAll)}
+          >
+            <span>{showAll ? "Show Less" : "View All Events"}</span>
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+          </motion.button>
+        </div>
       </motion.div>
     </section>
   );
 };
 
-export default Contact;
+export default Services;
