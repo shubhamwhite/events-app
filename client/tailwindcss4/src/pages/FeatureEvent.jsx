@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Home,
 } from "lucide-react";
+import Navbar from "../components/Navbar";
 
 const FeaturedEvents = () => {
   const [events, setEvents] = useState([]);
@@ -126,6 +127,9 @@ const FeaturedEvents = () => {
   const displayedEvents = showAll ? events : events.slice(0, 3);
 
   return (
+
+    <>
+    <Navbar/>
     <section className="relative min-h-screen py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -140,7 +144,7 @@ const FeaturedEvents = () => {
             repeat: Infinity,
             repeatType: "reverse",
           }}
-        />
+          />
       </div>
 
       <motion.div
@@ -148,29 +152,12 @@ const FeaturedEvents = () => {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-      >
-        <motion.nav className="mb-8" variants={itemVariants}>
-          <ol className="flex items-center space-x-2 text-sm">
-            <li className="flex items-center">
-              <a
-                href="/"
-                className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors"
-              >
-                <Home size={16} />
-                <span>Home</span>
-              </a>
-            </li>
-            <li className="flex items-center text-emerald-400">
-              <ChevronRight size={16} />
-            </li>
-            <li className="text-emerald-200">Testimonial</li>
-          </ol>
-        </motion.nav>
-
+        >
+      
         <motion.div
           className="text-center mb-10 sm:mb-16"
           variants={itemVariants}
-        >
+          >
           <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 inline-block mb-4">
             Upcoming Events
           </span>
@@ -187,8 +174,8 @@ const FeaturedEvents = () => {
 
         {loading && (
           <motion.div
-            className="flex justify-center items-center py-20"
-            variants={itemVariants}
+          className="flex justify-center items-center py-20"
+          variants={itemVariants}
           >
             <div className="w-12 sm:w-16 h-12 sm:h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
           </motion.div>
@@ -196,8 +183,8 @@ const FeaturedEvents = () => {
 
         {error && !loading && events.length === 0 && (
           <motion.div
-            className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 sm:p-6 max-w-md mx-auto"
-            variants={itemVariants}
+          className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 sm:p-6 max-w-md mx-auto"
+          variants={itemVariants}
           >
             <p className="text-emerald-400 text-center text-sm sm:text-base">
               {error}
@@ -210,24 +197,24 @@ const FeaturedEvents = () => {
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
               variants={containerVariants}
-            >
+              >
               {displayedEvents.map((event, index) => (
                 <motion.div
-                  key={event.id}
-                  className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
-                  variants={itemVariants}
-                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                key={event.id}
+                className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
+                variants={itemVariants}
+                whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
                   <div className="relative h-40 sm:h-48 overflow-hidden">
                     <img
                       src={event.image}
                       alt={event.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                      />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/50 to-transparent"></div>
                     <motion.div
                       className="absolute top-4 right-4 text-emerald-400"
@@ -236,7 +223,7 @@ const FeaturedEvents = () => {
                         scale: [1, 1.2, 1],
                       }}
                       transition={{ duration: 3, repeat: Infinity }}
-                    >
+                      >
                       <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
                     </motion.div>
                   </div>
@@ -282,13 +269,14 @@ const FeaturedEvents = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowAll(!showAll)}
-          >
+            >
             <span>{showAll ? "Show Less" : "View All Events"}</span>
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
           </motion.button>
         </div>
       </motion.div>
     </section>
+            </>
   );
 };
 

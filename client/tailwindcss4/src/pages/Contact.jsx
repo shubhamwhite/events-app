@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Send, Mail, Home, User, MessageSquare, Phone, ArrowRight, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "../components/Navbar";
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -63,6 +64,10 @@ const Contact = () => {
   };
 
   return (
+    <>
+    
+    <Navbar/>
+
     <section className="relative min-h-screen py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -86,20 +91,7 @@ const Contact = () => {
         animate="visible"
         variants={containerVariants}
       >
-        <motion.nav className="mb-6 sm:mb-8" variants={itemVariants}>
-          <ol className="flex items-center space-x-2 text-sm">
-            <li className="flex items-center">
-              <a href="/" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-                <Home size={16} />
-                <span>Home</span>
-              </a>
-            </li>
-            <li className="flex items-center text-emerald-400">
-              <ChevronRight size={16} />
-            </li>
-            <li className="text-emerald-200">Contact</li>
-          </ol>
-        </motion.nav>
+        
 
         <motion.div
           className="text-center mb-8 sm:mb-12 lg:mb-16"
@@ -288,6 +280,7 @@ const Contact = () => {
         </motion.div>
       </motion.div>
     </section>
+    </>
   );
 };
 

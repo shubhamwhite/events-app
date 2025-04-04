@@ -7,6 +7,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
+    { name: "Home", path: "/"},
     { name: "Events", path: "/event" },
     { name: "Services", path: "/service" },
     { name: "Gallery", path: "/gallery" },
@@ -15,12 +16,22 @@ const Navbar = () => {
   ];
 
   const navVariants = {
-    hidden: { opacity: 0, y: -20 },
+    hidden: { 
+      opacity: 0,
+      height: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
     visible: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.2 },
-    },
+      height: "auto",
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    }
   };
 
   return (
@@ -68,10 +79,10 @@ const Navbar = () => {
                 >
                   <NavLink
                     to="/store"
-                    className="px-4 py-2 rounded-md text-sm font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-colors duration-200 flex items-center gap-2"
+                    className="inline-flex px-4 py-2 rounded-md text-sm font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-colors duration-200 items-center gap-2"
                   >
                     <BookOpen size={16} />
-                    Book Store
+                    <span>Book Store</span>
                   </NavLink>
                 </motion.div>
               </div>
@@ -83,6 +94,7 @@ const Navbar = () => {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-md text-emerald-400 hover:text-emerald-500 hover:bg-black/40 focus:outline-none"
+                aria-label="Toggle menu"
               >
                 {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </motion.button>
@@ -94,24 +106,27 @@ const Navbar = () => {
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              className="md:hidden"
+              className="fixed inset-x-0 top-16 md:hidden bg-[#1B262C]/100 backdrop-blur-lg border-t border-emerald-500/20"
               initial="hidden"
               animate="visible"
               exit="hidden"
               variants={navVariants}
             >
-              <div className="m-5 rounded-2xl px-4 pt-2 pb-3 space-y-1 bg-black/40 backdrop-blur-lg border-t border-emerald-500/20">
+              <div className="px-4 py-3 space-y-2">
                 {navItems.map((item) => (
                   <motion.div
                     key={item.name}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full"
                   >
                     <NavLink
                       to={item.path}
                       className={({ isActive }) =>
-                        `block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-                          isActive ? "text-emerald-400" : "text-gray-300 hover:text-emerald-400"
+                        `block w-full px-4 py-2.5 rounded-lg text-base font-medium transition-colors duration-200 ${
+                          isActive 
+                            ? "bg-emerald-500/10 text-emerald-400" 
+                            : "text-gray-300 hover:bg-emerald-500/5 hover:text-emerald-400"
                         }`
                       }
                       onClick={() => setIsOpen(false)}
@@ -121,16 +136,17 @@ const Navbar = () => {
                   </motion.div>
                 ))}
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full"
                 >
                   <NavLink
                     to="/store"
-                    className="block px-4 py-2 rounded-md text-base font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-colors duration-200 items-center gap-2"
+                    className="flex items-center gap-2 w-full px-4 py-2.5 rounded-lg text-base font-medium bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-colors duration-200"
                     onClick={() => setIsOpen(false)}
                   >
-                    <BookOpen size={16} />
-                    Book Store
+                    <BookOpen size={18} />
+                    <span>Book Store</span>
                   </NavLink>
                 </motion.div>
               </div>

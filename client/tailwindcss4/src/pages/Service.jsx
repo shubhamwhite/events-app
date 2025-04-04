@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Package, Sparkles, Calendar,ChevronRight, Home , Users, Award, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router";
+import Navbar from "../components/Navbar";
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -129,6 +130,8 @@ const Services = () => {
   const displayedServices = showAll ? services : services.slice(0, 3);
 
   return (
+    <>
+    <Navbar/>
     <section className="relative min-h-[100vh] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -143,7 +146,7 @@ const Services = () => {
             repeat: Infinity,
             repeatType: "reverse",
           }}
-        />
+          />
       </div>
 
       <motion.div
@@ -151,28 +154,7 @@ const Services = () => {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-      >
-
-<nav className="mb-6 sm:mb-8">
-          <motion.ol 
-            className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <li className="flex items-center">
-              <a href="/" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-                <Home size={14} className="sm:w-4 sm:h-4" />
-                <span>Home</span>
-              </a>
-            </li>
-            <li className="flex items-center text-emerald-400">
-              <ChevronRight size={14} className="sm:w-4 sm:h-4" />
-            </li>
-            <li className="text-emerald-200">Blog</li>
-          </motion.ol>
-        </nav>
-
+        >
 
         <motion.div className="text-center mb-10 sm:mb-16" variants={itemVariants}>
           <span className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 inline-block mb-4">
@@ -191,8 +173,8 @@ const Services = () => {
 
         {loading ? (
           <motion.div
-            className="flex justify-center items-center py-20"
-            variants={itemVariants}
+          className="flex justify-center items-center py-20"
+          variants={itemVariants}
           >
             <div className="w-12 sm:w-16 h-12 sm:h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
           </motion.div>
@@ -201,17 +183,17 @@ const Services = () => {
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
               variants={containerVariants}
-            >
+              >
               {displayedServices.map((service, index) => (
                 <motion.div
-                  key={index}
-                  className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
-                  variants={itemVariants}
-                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                key={index}
+                className="group bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl overflow-hidden border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 shadow-lg hover:shadow-emerald-500/10"
+                variants={itemVariants}
+                whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
                   <div className="p-6 sm:p-8 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -242,13 +224,14 @@ const Services = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowAll(!showAll)}
-          >
+            >
             <span>{showAll ? "Show Less" : "View All Events"}</span>
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
           </motion.button>
         </div>
       </motion.div>
     </section>
+    </>
   );
 };
 

@@ -112,7 +112,7 @@ const FeaturedEvents = () => {
     <section className="relative min-h-[50%] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute bottom-50 left-20 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-teal-500/20 blur-3xl"
+          className="absolute bottom-50 left-20 w-72 sm:w-96 h-72 sm:h-96 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.3, 1],
             x: [0, 50, 0],

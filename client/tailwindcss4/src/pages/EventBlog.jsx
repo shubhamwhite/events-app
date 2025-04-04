@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Home, ChevronRight, ArrowRight, ChevronLeftCircle, ChevronRightCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Navbar from '../components/Navbar';
 
 const EventBlog = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,6 +90,10 @@ const EventBlog = () => {
   };
 
   return (
+
+    <>
+    <Navbar/>
+    
     <section className="relative min-h-screen py-12 sm:py-16 lg:py-20 px-3 sm:px-4 lg:px-6 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -113,25 +118,7 @@ const EventBlog = () => {
         animate="visible"
         variants={containerVariants}
       >
-        <nav className="mb-6 sm:mb-8">
-          <motion.ol 
-            className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <li className="flex items-center">
-              <a href="/" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-                <Home size={14} className="sm:w-4 sm:h-4" />
-                <span>Home</span>
-              </a>
-            </li>
-            <li className="flex items-center text-emerald-400">
-              <ChevronRight size={14} className="sm:w-4 sm:h-4" />
-            </li>
-            <li className="text-emerald-200">Blog</li>
-          </motion.ol>
-        </nav>
+       
 
         <motion.div className="text-center mb-10 sm:mb-16" variants={itemVariants}>
           <span className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-400 text-xs sm:text-sm font-medium border border-emerald-500/20 inline-block mb-3 sm:mb-4">
@@ -257,6 +244,7 @@ const EventBlog = () => {
         </motion.div>
       </motion.div>
     </section>
+    </>
   );
 };
 

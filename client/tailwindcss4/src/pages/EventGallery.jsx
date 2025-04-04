@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Users, Building2, Heart, Sparkles, Home, ChevronRight, Video, Image } from 'lucide-react';
+import Navbar from '../components/Navbar';
 
 const events = [
   {
@@ -84,6 +85,9 @@ const EventGallery = () => {
   };
 
   return (
+    <>
+    <Navbar/>
+   
     <section className="relative min-h-[100vh] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -107,25 +111,7 @@ const EventGallery = () => {
         variants={containerVariants}
         className="relative z-10 max-w-7xl mx-auto"
       >
-        <nav className="mb-6 sm:mb-8">
-          <motion.ol 
-            className="flex items-center space-x-2 text-xs sm:text-sm"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <li className="flex items-center">
-              <a href="/" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-                <Home size={14} className="sm:w-4 sm:h-4" />
-                <span>Home</span>
-              </a>
-            </li>
-            <li className="flex items-center text-emerald-400">
-              <ChevronRight size={14} className="sm:w-4 sm:h-4" />
-            </li>
-            <li className="text-emerald-200">Featured Events</li>
-          </motion.ol>
-        </nav>
+        
 
         {/* Header Section */}
         <motion.div variants={itemVariants} className="text-center mb-8 sm:mb-12">
@@ -266,6 +252,7 @@ const EventGallery = () => {
         )}
       </motion.div>
     </section>
+    </>
   );
 };
 

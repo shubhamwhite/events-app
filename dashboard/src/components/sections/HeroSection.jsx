@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { Upload, Image as ImageIcon, Video, Save, X, Check, Info } from 'lucide-react';
+import { Upload, Image as ImageIcon, Save, Plus, Trash2, Calendar, Clock, MapPin, Ticket } from 'lucide-react';
 
 const HeroSection = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    title: '',
+    subtitle: '',
     description: '',
-    motto: '',
+    upcomingEvent: {
+      name: '',
+      date: '',
+      time: '',
+      location: '',
+      tickets: ''
+    }
   });
 
-  const [image1, setImage1] = useState(null);
-  const [image2, setImage2] = useState(null);
-  const [video, setVideo] = useState(null);
-  const [image1Preview, setImage1Preview] = useState(null);
-  const [image2Preview, setImage2Preview] = useState(null);
-  const [videoPreview, setVideoPreview] = useState(null);
-
+  const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ success: false, message: '' });
   const [showStatus, setShowStatus] = useState(false);
@@ -48,24 +50,37 @@ const HeroSection = () => {
         if (response.data.item && response.data.item.length > 0) {
           const heroData = response.data.item[0];
           setFormData({
-            name: heroData.name || '',
+            title: heroData.title || '',
+            subtitle: heroData.subtitle || '',
             description: heroData.description || '',
-            motto: heroData.motto || '',
+            upcomingEvent: heroData.upcomingEvent || {
+              name: '',
+              date: '',
+              time: '',
+              location: '',
+              tickets: ''
+            }
           });
-          if (heroData.image1) setImage1Preview(heroData.image1);
-          if (heroData.image2) setImage2Preview(heroData.image2);
-          if (heroData.video) setVideoPreview(heroData.video);
+          if (heroData.images) setImages(heroData.images);
         }
       } catch (error) {
         console.error('Error fetching hero section:', error);
         setFormData({
-          name: 'Elegant Event Planning',
-          description: 'We create unforgettable experiences tailored to your unique vision. From intimate gatherings to grand celebrations, our team of experts handles every detail with precision and creativity.',
-          motto: 'Creating Memories That Last a Lifetime',
+          title: "Creating Unforgettable Moments",
+          subtitle: "Premier Event Planning & Management",
+          description: "Transform your vision into reality with our expert event planning services. From intimate gatherings to grand celebrations, we craft experiences that leave lasting impressions.",
+          upcomingEvent: {
+            name: "Annual Gala Night 2024",
+            date: "March 15, 2024",
+            time: "7:00 PM",
+            location: "Grand Plaza Hotel",
+            tickets: "Limited Seats Available"
+          }
         });
-        setImage1Preview('https://images.unsplash.com/photo-1519741497674-611481863552?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
-        setImage2Preview('https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80');
-        setVideoPreview('https://player.vimeo.com/external/368763065.sd.mp4?s=13d7e3e1464f21b724d89c4c175d7c712924d2d9&profile_id=139&oauth2_token_id=57447761');
+        setImages([
+          'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80',
+          'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80'
+        ]);
       }
     };
 
@@ -74,25 +89,40 @@ const HeroSection = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (name.includes('upcomingEvent.')) {
+      const field = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        upcomingEvent: {
+          ...prev.upcomingEvent,
+          [field]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleFileChange = (e) => {
-    const { id, files } = e.target;
-    if (!files.length) return;
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    const newImageFiles = [...imageFiles];
+    const newImages = [...images];
 
-    const file = files[0];
+    files.forEach(file => {
+      const imageUrl = URL.createObjectURL(file);
+      newImages.push(imageUrl);
+      newImageFiles.push(file);
+    });
 
-    if (id === 'hero-image') {
-      setImage1(file);
-      setImage1Preview(URL.createObjectURL(file));
-    } else if (id === 'additional-image') {
-      setImage2(file);
-      setImage2Preview(URL.createObjectURL(file));
-    } else if (id === 'hero-video') {
-      setVideo(file);
-      setVideoPreview(URL.createObjectURL(file));
-    }
+    setImages(newImages);
+    setImageFiles(newImageFiles);
+  };
+
+  const handleRemoveImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    const newImageFiles = imageFiles.filter((_, i) => i !== index);
+    setImages(newImages);
+    setImageFiles(newImageFiles);
   };
 
   const handleSubmit = async (e) => {
@@ -101,12 +131,14 @@ const HeroSection = () => {
     setShowStatus(false);
 
     const data = new FormData();
-    data.append('name', formData.name);
+    data.append('title', formData.title);
+    data.append('subtitle', formData.subtitle);
     data.append('description', formData.description);
-    data.append('motto', formData.motto);
-    if (image1) data.append('image1', image1);
-    if (image2) data.append('image2', image2);
-    if (video) data.append('video', video);
+    data.append('upcomingEvent', JSON.stringify(formData.upcomingEvent));
+    
+    imageFiles.forEach((file) => {
+      data.append('images', file);
+    });
 
     try {
       const response = await axios.put('http://localhost:5000/api/v1/dashboard/hero/update', data, {
@@ -125,22 +157,7 @@ const HeroSection = () => {
     } finally {
       setIsSubmitting(false);
       setShowStatus(true);
-      setTimeout(() => {
-        setShowStatus(false);
-      }, 5000);
-    }
-  };
-
-  const handleRemoveFile = (type) => {
-    if (type === 'image1') {
-      setImage1(null);
-      setImage1Preview(null);
-    } else if (type === 'image2') {
-      setImage2(null);
-      setImage2Preview(null);
-    } else if (type === 'video') {
-      setVideo(null);
-      setVideoPreview(null);
+      setTimeout(() => setShowStatus(false), 5000);
     }
   };
 
@@ -152,22 +169,6 @@ const HeroSection = () => {
           style={{ 
             backgroundImage: `radial-gradient(circle at 2px 2px, #ffffff 1px, transparent 0)`,
             backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-50 right-20 w-72 h-72 rounded-full bg-emerald-500/20 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            x: [0, -40, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            repeatType: "reverse",
           }}
         />
       </div>
@@ -203,257 +204,187 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
           >
-            <div className="flex items-center">
-              {submitStatus.success ? (
-                <Check className="text-emerald-400 mr-2" size={20} />
-              ) : (
-                <Info className="text-red-400 mr-2" size={20} />
-              )}
-              <p className={submitStatus.success ? 'text-emerald-400' : 'text-red-400'}>
-                {submitStatus.message}
-              </p>
-            </div>
+            <p className={submitStatus.success ? 'text-emerald-400' : 'text-red-400'}>
+              {submitStatus.message}
+            </p>
           </motion.div>
         )}
 
-        <motion.form
-          onSubmit={handleSubmit}
-          className="space-y-8"
-          variants={containerVariants}
-        >
-          <motion.div
-            className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6"
-            variants={itemVariants}
-          >
-            <h3 className="text-xl font-bold text-emerald-400 mb-4">Company Name</h3>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-              placeholder="Enter your company or event name"
-            />
-          </motion.div>
-
-          <motion.div
-            className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6"
-            variants={itemVariants}
-          >
-            <h3 className="text-xl font-bold text-emerald-400 mb-4">Description</h3>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-              rows={4}
-              placeholder="Describe your services or event"
-            ></textarea>
-          </motion.div>
-
-          <motion.div
-            className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6"
-            variants={itemVariants}
-          >
-            <h3 className="text-xl font-bold text-emerald-400 mb-4">Company Motto</h3>
-            <input
-              type="text"
-              name="motto"
-              value={formData.motto}
-              onChange={handleInputChange}
-              className="w-full p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-              placeholder="Enter your motto or tagline"
-            />
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            variants={containerVariants}
-          >
-            <motion.div
-              className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6"
-              variants={itemVariants}
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-emerald-400 flex items-center">
-                  <ImageIcon size={20} className="mr-2 text-emerald-400" />
-                  Primary Image
-                </h3>
-                {image1Preview && (
-                  <motion.button
-                    type="button"
-                    onClick={() => handleRemoveFile('image1')}
-                    className="bg-red-500/20 text-red-400 p-2 rounded-full hover:bg-red-500/30 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <X size={16} />
-                  </motion.button>
-                )}
-              </div>
-
-              <div className="relative">
-                {image1Preview ? (
-                  <div className="relative rounded-lg overflow-hidden">
-                    <img
-                      src={image1Preview}
-                      alt="Hero"
-                      className="w-full h-64 object-cover rounded-lg"
-                    />
-                  </div>
-                ) : (
-                  <label
-                    htmlFor="hero-image"
-                    className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-emerald-500/20 rounded-lg cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
-                  >
-                    <Upload size={40} className="text-emerald-400 mb-2" />
-                    <span className="text-emerald-400 font-medium">Click to upload primary image</span>
-                    <span className="text-emerald-500/60 text-sm mt-1">PNG, JPG or WEBP (max. 10MB)</span>
-                  </label>
-                )}
+        <motion.form onSubmit={handleSubmit} className="space-y-8" variants={containerVariants}>
+          {/* Main Content */}
+          <motion.div variants={itemVariants}>
+            <div className="space-y-6">
+              {/* Title */}
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6">
+                <h3 className="text-xl font-bold text-emerald-400 mb-4">Title</h3>
                 <input
-                  type="file"
-                  id="hero-image"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className="w-full p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  placeholder="Enter main title"
                 />
               </div>
-            </motion.div>
 
-            <motion.div
-              className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6"
-              variants={itemVariants}
-            >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-emerald-400 flex items-center">
-                  <ImageIcon size={20} className="mr-2 text-emerald-400" />
-                  Secondary Image
-                </h3>
-                {image2Preview && (
-                  <motion.button
-                    type="button"
-                    onClick={() => handleRemoveFile('image2')}
-                    className="bg-red-500/20 text-red-400 p-2 rounded-full hover:bg-red-500/30 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <X size={16} />
-                  </motion.button>
-                )}
-              </div>
-
-              <div className="relative">
-                {image2Preview ? (
-                  <div className="relative rounded-lg overflow-hidden">
-                    <img
-                      src={image2Preview}
-                      alt="Additional"
-                      className="w-full h-64 object-cover rounded-lg"
-                    />
-                  </div>
-                ) : (
-                  <label
-                    htmlFor="additional-image"
-                    className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-emerald-500/20 rounded-lg cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
-                  >
-                    <Upload size={40} className="text-emerald-400 mb-2" />
-                    <span className="text-emerald-400 font-medium">Click to upload secondary image</span>
-                    <span className="text-emerald-500/60 text-sm mt-1">PNG, JPG or WEBP (max. 10MB)</span>
-                  </label>
-                )}
+              {/* Subtitle */}
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6">
+                <h3 className="text-xl font-bold text-emerald-400 mb-4">Subtitle</h3>
                 <input
-                  type="file"
-                  id="additional-image"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
+                  type="text"
+                  name="subtitle"
+                  value={formData.subtitle}
+                  onChange={handleInputChange}
+                  className="w-full p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  placeholder="Enter subtitle"
                 />
               </div>
-            </motion.div>
-          </motion.div>
 
-          <motion.div
-            className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6"
-            variants={itemVariants}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-emerald-400 flex items-center">
-                <Video size={20} className="mr-2 text-emerald-400" />
-                Promotional Video
-              </h3>
-              {videoPreview && (
-                <motion.button
-                  type="button"
-                  onClick={() => handleRemoveFile('video')}
-                  className="bg-red-500/20 text-red-400 p-2 rounded-full hover:bg-red-500/30 transition-colors"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <X size={16} />
-                </motion.button>
-              )}
+              {/* Description */}
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6">
+                <h3 className="text-xl font-bold text-emerald-400 mb-4">Description</h3>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="w-full p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  rows={4}
+                  placeholder="Enter description"
+                />
+              </div>
             </div>
+          </motion.div>
 
-            <div className="relative">
-              {videoPreview ? (
-                <div className="relative rounded-lg overflow-hidden">
-                  <video
-                    controls
-                    className="w-full rounded-lg"
-                  >
-                    <source src={videoPreview} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
+          {/* Upcoming Event Section */}
+          <motion.div variants={itemVariants}>
+            <div className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6">
+              <h3 className="text-xl font-bold text-emerald-400 mb-6">Upcoming Event Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-emerald-400 text-sm font-medium mb-2">Event Name</label>
+                  <input
+                    type="text"
+                    name="upcomingEvent.name"
+                    value={formData.upcomingEvent.name}
+                    onChange={handleInputChange}
+                    className="w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="Enter event name"
+                  />
                 </div>
-              ) : (
-                <label
-                  htmlFor="hero-video"
-                  className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-emerald-500/20 rounded-lg cursor-pointer bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
-                >
-                  <Upload size={40} className="text-emerald-400 mb-2" />
-                  <span className="text-emerald-400 font-medium">Click to upload promotional video</span>
-                  <span className="text-emerald-500/60 text-sm mt-1">MP4, WebM or OGG (max. 100MB)</span>
-                </label>
-              )}
-              <input
-                type="file"
-                id="hero-video"
-                accept="video/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
+                <div>
+                  <label className="block text-emerald-400 text-sm font-medium mb-2">Date</label>
+                  <input
+                    type="text"
+                    name="upcomingEvent.date"
+                    value={formData.upcomingEvent.date}
+                    onChange={handleInputChange}
+                    className="w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="Enter date"
+                  />
+                </div>
+                <div>
+                  <label className="block text-emerald-400 text-sm font-medium mb-2">Time</label>
+                  <input
+                    type="text"
+                    name="upcomingEvent.time"
+                    value={formData.upcomingEvent.time}
+                    onChange={handleInputChange}
+                    className="w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="Enter time"
+                  />
+                </div>
+                <div>
+                  <label className="block text-emerald-400 text-sm font-medium mb-2">Location</label>
+                  <input
+                    type="text"
+                    name="upcomingEvent.location"
+                    value={formData.upcomingEvent.location}
+                    onChange={handleInputChange}
+                    className="w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="Enter location"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-emerald-400 text-sm font-medium mb-2">Ticket Status</label>
+                  <input
+                    type="text"
+                    name="upcomingEvent.tickets"
+                    value={formData.upcomingEvent.tickets}
+                    onChange={handleInputChange}
+                    className="w-full p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                    placeholder="Enter ticket status"
+                  />
+                </div>
+              </div>
             </div>
           </motion.div>
 
-          <motion.div
-            className="mt-10"
-            variants={itemVariants}
-          >
-            <motion.button
+          {/* Images Section */}
+          <motion.div variants={itemVariants}>
+            <div className="bg-black/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-emerald-500/20 p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-emerald-400 flex items-center">
+                  <ImageIcon size={20} className="mr-2" />
+                  Image Gallery
+                </h3>
+                <label className="cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-all">
+                    <Plus size={16} />
+                    <span>Add Images</span>
+                  </div>
+                </label>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {images.map((image, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={image}
+                      alt={`Gallery ${index + 1}`}
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-2 right-2 p-2 bg-red-500/20 rounded-full text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Submit Button */}
+          <motion.div variants={itemVariants}>
+            <button
               type="submit"
               disabled={isSubmitting}
-              className="group relative overflow-hidden w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-4 px-8 rounded-xl font-medium inline-flex items-center justify-center gap-2 disabled:opacity-70 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-4 px-8 rounded-xl font-medium inline-flex items-center justify-center gap-2 disabled:opacity-70 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300"
             >
-              <span className="relative flex items-center">
-                {isSubmitting ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Save size={20} className="mr-2" />
-                    Save Hero Section
-                  </>
-                )}
-              </span>
-            </motion.button>
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Save size={20} />
+                  Save Changes
+                </>
+              )}
+            </button>
           </motion.div>
         </motion.form>
       </motion.div>

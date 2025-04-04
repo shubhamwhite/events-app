@@ -55,20 +55,10 @@ const Hero = () => {
   };
 
   return (
-    <div className="relative min-h-[50%] bg-[#1a1a1a] overflow-hidden">
-      {/* Animated Background Pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, #ffffff 1px, transparent 0)`,
-          backgroundSize: '40px 40px',
-        }}></div>
-      </div>  
-
-      {/* Main Content Container */}
-      <div className="relative z-10 min-h-[100svh] flex items-center py-16 sm:py-20">
+    <section className="relative">
+      <div className="relative min-h-[100vh] py-5 sm:py-30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Mobile-first layout: Card appears first on mobile */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -241,7 +231,7 @@ const Hero = () => {
           </motion.div>
         )}
       </AnimatePresence>  
-    </div>
+    </section>
   );
 };
 

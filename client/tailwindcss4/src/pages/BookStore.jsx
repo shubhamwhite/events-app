@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Heart, Star, ChevronRight, Home, Search, Sparkles } from 'lucide-react';
+import Navbar from '../components/Navbar';
 
 const books = [
   {
@@ -89,6 +90,9 @@ const BookStore = () => {
   const displayedBooks = showAll ? filteredBooks : filteredBooks.slice(0, 3);
 
   return (
+    <>
+    
+      <Navbar/>
     <section className="relative min-h-screen py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-black">
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -108,21 +112,6 @@ const BookStore = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Breadcrumb */}
-        <nav className="mb-8">
-          <ol className="flex items-center space-x-2 text-sm">
-            <li className="flex items-center">
-              <a href="/" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
-                <Home size={16} />
-                <span>Home</span>
-              </a>
-            </li>
-            <li className="flex items-center text-emerald-400">
-              <ChevronRight size={16} />
-            </li>
-            <li className="text-emerald-200">Book Store</li>
-          </ol>
-        </nav>
 
         {/* Header */}
         <div className="text-center mb-12">
@@ -275,6 +264,7 @@ const BookStore = () => {
         </AnimatePresence>
       </div>
     </section>
+    </>
   );
 };
 
